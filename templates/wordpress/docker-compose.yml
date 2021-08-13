@@ -1,0 +1,58 @@
+version: "3.9"
+    
+networks:
+  default:
+    name: ${APP_NAME}_main
+
+services:
+  nginx:
+    image: nginx
+    container_name: ${APP_NAME}-nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+        - ./nginx:/etc/nginx/conf.d
+        - ./logs/nginx:/var/log/nginx
+        - ./public:/var/www/html
+    restart: always
+
+  mysql:
+    image: mariadb
+    container_name: ${APP_NAME}-mysql
+    volumes:
+       - ./database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - MYSQL_DATABASE=${WORDPRESS_DB_NAME}
+    restart: always
+    ports:
+      - '3306:3306'
+
+  adminer:
+    image: adminer
+    container_name: ${APP_NAME}-adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  wordpress:
+    depends_on:
+      - mysql
+      - nginx
+    image: wordpress:php7.4-fpm
+    container_name: ${APP_NAME}-wordpress
+    volumes:
+      - ./public:/var/www/html
+    ports:
+      - 9000:9000
+    restart: always
+
+  wordpress-cli:
+    depends_on:
+      - mysql
+      - wordpress
+    image: wordpress:cli
+    container_name: ${APP_NAME}-wordpress-cli
+    volumes:
+      - ./public:/var/www/html
