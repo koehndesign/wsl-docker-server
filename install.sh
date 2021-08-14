@@ -22,6 +22,11 @@ compose_release() {
 sudo curl -L https://github.com/docker/compose/releases/download/$(compose_release)/docker-compose-$(uname -s)-$(uname -m) \
   -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 
+# manage docker as non root user
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+
 # allow docker to run without password
 echo "$(whoami) ALL = (root) NOPASSWD: /usr/sbin/service docker *" | sudo tee /etc/sudoers.d/docker > /dev/null
 
@@ -33,4 +38,11 @@ cd ~
 
 # start docker automatically since WSL doesn't support systemd
 sudo service docker status || sudo service docker start
+
 EOF
+
+# start docker manually for the first time
+sudo service docker start
+
+echo "Install completed successfully!"
+exit 0

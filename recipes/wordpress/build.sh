@@ -9,7 +9,7 @@ dir="sites/$name"
 
 mkdir -p $dir
 
-rsync -a templates/wordpress/ $dir
+rsync -a recipes/wordpress/ $dir
 
 cd $dir
 
