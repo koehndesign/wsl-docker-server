@@ -1,5 +1,5 @@
 #!/bin/bash
-# install serverwp
+# install wsl-docker-server
 
 cd ~
 
