@@ -1,0 +1,7 @@
+version: "3.9"
+    
+networks:
+  default:
+    name: ${APP_NAME}_main
+
+services:
